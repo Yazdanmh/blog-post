@@ -74,10 +74,25 @@
                     <span>About</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('setting.index') }}">
+                <a class="nav-link" href="{{ route('role.index') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Setting</span></a>
+                    <span>Roles</span></a>
             </li>
+            @can('isAdmin')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('setting.index') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Setting</span></a>
+                </li>
+            @endcan
+
+            @can('isAdmin')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('users.index') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Users</span></a>
+                </li>
+            @endcan
 
 
             <!-- Sidebar Toggler (Sidebar) -->

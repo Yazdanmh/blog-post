@@ -18,6 +18,8 @@
         rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{{ asset('/frontend/css/styles.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <style>
         svg {
             width: 20px;
@@ -39,11 +41,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"
-                            href="{{ route('home.about') }}">About</a></li>
+                            href="/">{{ __('translate.home') }}</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"
-                            href="{{ route('contact.home') }}">Contact</a></li>
+                            href="{{ route('home.about') }}">{{ __('translate.about') }}</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"
+                            href="{{ route('contact.home') }}">{{ __('translate.contact') }}</a></li>
+
+                    <li>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                data-toggle="dropdown" aria-expanded="false">
+                                {{ __('translate.language') }}
+                            </a>
+
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ route('local', ['local' => 'dr']) }}">دری</a>
+                                <a class="dropdown-item" href="{{ route('local', ['local' => 'en']) }}">English</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -86,6 +103,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
     <script src="{{ asset('/frontend/js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>

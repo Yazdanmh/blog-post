@@ -12,8 +12,7 @@ use Intervention\Image\Colors\Rgb\Channels\Red;
 class ContactController extends Controller
 {
     public function index(){
-        return view('frontend.contact.index')
-            ->with('setting',Setting::first());
+        return view('frontend.contact.index');
     }
     public function post(Request $request){
         $request->validate([

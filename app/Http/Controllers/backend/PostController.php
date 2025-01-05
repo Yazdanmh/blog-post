@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\backend;
+
 use App\Models\Post;
-use Str; 
+use Str;
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -17,7 +20,7 @@ class PostController extends Controller
     public function index()
     {
         return view('backend.posts.index')
-        ->with('posts',Post::orderBy('created_at','DESC')->paginate(10)); 
+            ->with('posts', Post::orderBy('created_at', 'DESC')->where('lang', app()->getLocale())->paginate(10));
     }
 
     /**
@@ -27,7 +30,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('backend.posts.create');
+        return view('backend.posts.create')
+            ->with('articles', Article::all());
     }
 
     /**
@@ -41,16 +45,24 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|max:50',
             'sub_title' => 'required|max:50',
-            'description' => 'required'
+            'description' => 'required',
+            'article' => 'required|array'
         ]);
 
-        Post::create([
+        $post = Post::create([
             'title' => $request->title,
             'sub_title' => $request->sub_title,
             'description' => $request->description,
-            'slug' => Str::slug($request->title)
+            'slug' => Str::slug($request->title),
+            'lang' => app()->getLocale(),
+            'profile_id' => Auth::user()->profile->id,
         ]);
-        Session::flash('success',"post created successfully");
+        $post->articles()->attach($request->article);
+
+        foreach ($request->image as $image) {
+            $post->images()->create(['image' => $image]);
+        }
+        Session::flash('success', "post created successfully");
         return redirect()->route('post.index');
     }
 
@@ -61,10 +73,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+    public function show($id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -72,9 +81,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post){
+    public function edit(Post $post)
+    {
         return view('backend.posts.edit')
-        ->with('post',$post); 
+            ->with('post', $post)
+            ->with('articles', Article::all());
     }
 
     /**
@@ -89,16 +100,21 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|max:50',
             'sub_title' => 'required|max:50',
-            'description' => 'required'
+            'description' => 'required',
+            'article' => 'required|array'
+
         ]);
-        
-        $post->title = $request->title; 
-        $post->sub_title = $request->sub_title; 
-        $post->description = $request->description; 
+
+        $post->title = $request->title;
+        $post->sub_title = $request->sub_title;
+        $post->description = $request->description;
         $post->slug = Str::slug($request->title);
-        $post->save(); 
-        Session::flash('success',"post Updated successfully");
-        
+        $post->lang = app()->getLocale();
+        $post->save();
+
+        $post->articles()->sync($request->article);
+        Session::flash('success', "post Updated successfully");
+
         return redirect()->route('post.index');
     }
 
@@ -110,29 +126,31 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
         $post->delete();
         return "success";
     }
-    public function trash(){
+    public function trash()
+    {
+        $this->authorize('forceDelete', Post::class);
         return view('backend.posts.trash')
-            ->with('posts',Post::onlyTrashed()->paginate(10));
+            ->with('posts', Post::onlyTrashed()->paginate(10));
     }
     public function delete($id)
-{
-    $post = Post::withTrashed()->where('id', $id)->first();
+    {
+        $post = Post::withTrashed()->where('id', $id)->first();
 
-    if (!$post) {
-        return response()->json(['message' => 'Record not found'], 404);
+        if (!$post) {
+            return response()->json(['message' => 'Record not found'], 404);
+        }
+
+        $post->forceDelete();
+        return response()->json(['message' => 'success'], 200);
     }
-
-    $post->forceDelete();
-    return response()->json(['message' => 'success'], 200);
-}
-
-
-    public function restore($id){
-        $post = Post::onlyTrashed()->where('id',$id)->first(); 
-        $post->restore(); 
-        return redirect()->route('post.index'); 
+    public function restore($id)
+    {
+        $post = Post::onlyTrashed()->where('id', $id)->first();
+        $post->restore();
+        return redirect()->route('post.index');
     }
 }

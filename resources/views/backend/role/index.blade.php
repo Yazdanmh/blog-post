@@ -3,13 +3,10 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h1>Posts</h1>
-                <a href="{{ route('post.create') }}" class="btn btn-success float-right">Create Post</a>
+                <h1>Roles</h1>
+                <a href="{{ route('role.create') }}" class="btn btn-success float-right">Create Role</a>
                 <br>
-                <br>
-                @can('forceDelete', App\Models\Post::class)
-                    <a href="{{ route('post.trash') }}" class="btn btn-primary float-right">Trash</a>
-                @endcan
+
 
             </div>
             <div class="card-body">
@@ -17,25 +14,21 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Title</th>
-                            <th>Sub Title</th>
-                            <th>Author</th>
+                            <th>Name</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($posts as $index => $post)
+                        @foreach ($roles as $index => $role)
                             <tr>
-                                <td>{{ $posts->currentPage() * 10 - 10 + $index + 1 }}</td>
-                                <td>{{ $post->title }}</td>
-                                <td>{{ $post->sub_title }}</td>
-                                <td>{{ $post->profile->user->name }}</td>
+                                <td>{{ $roles->currentPage() * 10 - 10 + $index + 1 }}</td>
+                                <td>{{ $role->name }}</td>
                                 <td>
-                                    <a href="{{ route('post.edit', ['post' => $post->id]) }}">Edit</a>
-                                    @can('delete', $post)
-                                        |
-                                        <a href="#" class="delete" id="{{ $post->id }}">Delete</a>
-                                    @endcan
+                                    <a href="{{ route('role.edit', ['role' => $role->id]) }}">Edit</a>
+                                    |
+                                    <a href="#" class="delete" id="{{ $role->id }}">Delete</a>
+                                    |
+                                    <a href="{{ route('role.show', ['role' => $role->id]) }}">Permissions</a>
 
                                 </td>
                             </tr>
@@ -43,7 +36,7 @@
                     </tbody>
                 </table>
                 <tfoot>
-                    {{ $posts->links() }}
+                    {{ $roles->links() }}
                 </tfoot>
             </div>
         </div>

@@ -9,19 +9,20 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('frontend.home.index')
-            ->with('posts', Post::orderBy('created_at','DESC')->paginate(5))
-            ->with('setting',Setting::first());
+            ->with('posts', Post::orderBy('created_at', 'DESC')->where('lang', app()->getLocale())->paginate(5));
     }
-    public function show($slug){
-        $post = Post::where('slug', $slug)->first(); 
+    public function show($slug)
+    {
+        $post = Post::where('slug', $slug)->first();
         return view('frontend.home.show')
-            ->with('post',$post);
+            ->with('post', $post);
     }
-    public function about(){
+    public function about()
+    {
         return view('frontend.about.index')
-            ->with('about',About::first())
-            ->with('setting',Setting::first()); 
+            ->with('about', About::first());
     }
 }

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Setting extends Model
+class Article extends Model
 {
     use HasFactory;
-
-    public function image()
+    public function posts()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->belongsToMany(Post::class, 'posts_articles');
     }
 }
